@@ -18,7 +18,7 @@ export default function CounterScreen({ navigation }) {
   };
 
   const save = async () => {
-    const mins = Math.ceil(seconds / 60) || 1; // convert to mins for record
+    const mins = Math.ceil(seconds / 60) || 1; // convert to mins for record//
     const entry = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
@@ -32,7 +32,7 @@ export default function CounterScreen({ navigation }) {
       const old = await AsyncStorage.getItem('dfm_sessions');
       const list = old ? JSON.parse(old) : [];
       list.push(entry);
-      await AsyncStorage.setItem('dfm_sessions', JSON.stringify(list)); // requirement: serialization
+      await AsyncStorage.setItem('dfm_sessions', JSON.stringify(list)); 
       navigation.goBack();
     } catch (e) {
       console.log(e);
@@ -58,7 +58,7 @@ export default function CounterScreen({ navigation }) {
         <View style={styles.overlay}>
           <View style={styles.sheet}>
             <Text style={styles.sheetTitle}>Steps to count fetal kicks</Text>
-            {/* steps from figma */}
+           
             <Text style={styles.step}>1. Choose a time when you are least distracted.</Text>
             <Text style={styles.step}>2. Lie on your left side or sit with feet propped up.</Text>
             <Text style={styles.step}>3. Place your hands on your belly.</Text>
