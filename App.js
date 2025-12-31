@@ -13,7 +13,7 @@ export default function App() {
       <Stack.Navigator 
         initialRouteName="Home"
         screenOptions={{
-          headerShown: false, // hiding default header to match Figma's custom UI
+          headerShown: false, 
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
