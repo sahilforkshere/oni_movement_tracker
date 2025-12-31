@@ -1,71 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CounterScreen({ navigation }) {
   const [seconds, setSeconds] = useState(0);
-  const [modal, setModal] = useState(false);
+  const [infoVisible, setInfoVisible] = useState(false);
 
   useEffect(() => {
-    const t = setInterval(() => setSeconds(s => s + 1), 1000); 
+    const t = setInterval(() => setSeconds(s => s + 1), 1000); // requirement: timer starts at 00:00
     return () => clearInterval(t);
   }, []);
 
-  const timeStr = (s) => {
+  const formatTime = (s) => {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
     const sc = (s % 60).toString().padStart(2, '0');
     return `${m}:${sc}`;
   };
 
-  const save = async () => {
-    const mins = Math.ceil(seconds / 60) || 1; // convert to mins for record//
-    const entry = {
+  const handleSave = async () => {
+    const minsTaken = Math.ceil(seconds / 60) || 1; // requirement: time taken in minutes
+
+    // requirement: structured entry
+    const session = {
       id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(), // used for newest-first sorting
       displayDate: new Date().toLocaleDateString('en-GB', { 
         weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' 
-      }),
-      duration: mins
+      }), // date format matches figma
+      duration: minsTaken
     };
 
     try {
       const old = await AsyncStorage.getItem('dfm_sessions');
       const list = old ? JSON.parse(old) : [];
-      list.push(entry);
-      await AsyncStorage.setItem('dfm_sessions', JSON.stringify(list)); 
-      navigation.goBack();
+      list.push(session);
+      // requirement: proper serialization
+      await AsyncStorage.setItem('dfm_sessions', JSON.stringify(list));
+      navigation.goBack(); // requirement: go back after saving
     } catch (e) {
-      console.log(e);
+      console.log("save error", e);
     }
   };
 
   return (
     <View style={styles.container}>
-   
-      <TouchableOpacity onPress={() => setModal(true)} style={styles.info}>
+      {/* requirement: information icon in the ui */}
+      <TouchableOpacity onPress={() => setInfoVisible(true)} style={styles.infoIcon}>
         <Text style={{fontSize: 26}}>ⓘ</Text>
       </TouchableOpacity>
 
-      <Text style={styles.label}>Stop recording after 10 kicks</Text>
-      <Text style={styles.timer}>{timeStr(seconds)}</Text>
+      <Text style={styles.instr}>Stop recording after 10 kicks</Text>
+      <Text style={styles.timer}>{formatTime(seconds)}</Text>
 
-      <TouchableOpacity style={styles.save} onPress={save}>
-        <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>Save</Text>
+      <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+        <Text style={styles.saveBtnText}>Save</Text>
       </TouchableOpacity>
 
-      
-      <Modal visible={modal} animationType="slide" transparent={true}>
+      {/* bottom text link from figma design */}
+      <TouchableOpacity onPress={() => Alert.alert("Advice", "If you feel less than 10 kicks in 2 hours, contact your doctor.")}>
+        <Text style={styles.advice}>What if I am not getting enough kicks?</Text>
+      </TouchableOpacity>
+
+      {/* requirement: info bottom sheet modal */}
+      <Modal visible={infoVisible} animationType="slide" transparent={true}>
         <View style={styles.overlay}>
           <View style={styles.sheet}>
             <Text style={styles.sheetTitle}>Steps to count fetal kicks</Text>
-           
+            {/* requirements: text must match figma */}
             <Text style={styles.step}>1. Choose a time when you are least distracted.</Text>
             <Text style={styles.step}>2. Lie on your left side or sit with feet propped up.</Text>
             <Text style={styles.step}>3. Place your hands on your belly.</Text>
             <Text style={styles.step}>4. Start a timer or watch the clock.</Text>
             <Text style={styles.step}>5. Count each kick until you reach 10.</Text>
             <Text style={styles.step}>6. Once you reach 10 kicks, save the session.</Text>
-            <TouchableOpacity onPress={() => setModal(false)} style={{marginTop: 10, alignSelf: 'center'}}>
+            <TouchableOpacity onPress={() => setInfoVisible(false)} style={styles.close}>
               <Text style={{color: '#007AFF'}}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -77,12 +85,15 @@ export default function CounterScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  info: { position: 'absolute', top: 50, right: 25 },
-  label: { fontSize: 18, color: '#555', marginBottom: 15 },
-  timer: { fontSize: 72, fontWeight: 'bold', color: '#F25C54' },
-  save: { backgroundColor: '#000', paddingVertical: 15, paddingHorizontal: 70, borderRadius: 30, marginTop: 40 },
+  infoIcon: { position: 'absolute', top: 50, right: 25 },
+  instr: { fontSize: 18, marginBottom: 10, color: '#555' },
+  timer: { fontSize: 72, fontWeight: 'bold', color: '#E74C3C', marginBottom: 40 },
+  saveBtn: { backgroundColor: '#000', paddingVertical: 15, paddingHorizontal: 70, borderRadius: 30 },
+  saveBtnText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  advice: { marginTop: 20, textDecorationLine: 'underline', color: '#000' },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   sheet: { backgroundColor: '#fff', borderTopLeftRadius: 25, borderTopRightRadius: 25, padding: 30 },
   sheetTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
-  step: { fontSize: 16, marginBottom: 12, lineHeight: 22 }
+  step: { fontSize: 16, marginBottom: 12, lineHeight: 22 },
+  close: { marginTop: 10, alignSelf: 'center' }
 });
