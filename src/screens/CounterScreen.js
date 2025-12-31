@@ -7,7 +7,7 @@ export default function CounterScreen({ navigation }) {
   const [infoVisible, setInfoVisible] = useState(false);
 
   useEffect(() => {
-    const t = setInterval(() => setSeconds(s => s + 1), 1000); // requirement: timer starts at 00:00
+    const t = setInterval(() => setSeconds(s => s + 1), 1000); 
     return () => clearInterval(t);
   }, []);
 
@@ -18,15 +18,15 @@ export default function CounterScreen({ navigation }) {
   };
 
   const handleSave = async () => {
-    const minsTaken = Math.ceil(seconds / 60) || 1; // requirement: time taken in minutes
+    const minsTaken = Math.ceil(seconds / 60) || 1; 
 
-    // requirement: structured entry
+ 
     const session = {
       id: Date.now().toString(),
-      timestamp: new Date().toISOString(), // used for newest-first sorting
+      timestamp: new Date().toISOString(),
       displayDate: new Date().toLocaleDateString('en-GB', { 
         weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' 
-      }), // date format matches figma
+      }), 
       duration: minsTaken
     };
 
@@ -34,9 +34,9 @@ export default function CounterScreen({ navigation }) {
       const old = await AsyncStorage.getItem('dfm_sessions');
       const list = old ? JSON.parse(old) : [];
       list.push(session);
-      // requirement: proper serialization
+      
       await AsyncStorage.setItem('dfm_sessions', JSON.stringify(list));
-      navigation.goBack(); // requirement: go back after saving
+      navigation.goBack(); 
     } catch (e) {
       console.log("save error", e);
     }
@@ -44,7 +44,7 @@ export default function CounterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* requirement: information icon in the ui */}
+     
       <TouchableOpacity onPress={() => setInfoVisible(true)} style={styles.infoIcon}>
         <Text style={{fontSize: 26}}>ⓘ</Text>
       </TouchableOpacity>
@@ -56,17 +56,15 @@ export default function CounterScreen({ navigation }) {
         <Text style={styles.saveBtnText}>Save</Text>
       </TouchableOpacity>
 
-      {/* bottom text link from figma design */}
+     
       <TouchableOpacity onPress={() => Alert.alert("Advice", "If you feel less than 10 kicks in 2 hours, contact your doctor.")}>
         <Text style={styles.advice}>What if I am not getting enough kicks?</Text>
       </TouchableOpacity>
 
-      {/* requirement: info bottom sheet modal */}
       <Modal visible={infoVisible} animationType="slide" transparent={true}>
         <View style={styles.overlay}>
           <View style={styles.sheet}>
             <Text style={styles.sheetTitle}>Steps to count fetal kicks</Text>
-            {/* requirements: text must match figma */}
             <Text style={styles.step}>1. Choose a time when you are least distracted.</Text>
             <Text style={styles.step}>2. Lie on your left side or sit with feet propped up.</Text>
             <Text style={styles.step}>3. Place your hands on your belly.</Text>
