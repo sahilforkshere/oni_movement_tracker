@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
       
      
       <View style={styles.article}>
-        <Text style={{color: '#888'}}>Article Placeholder</Text>
+        <Text style={{color: '#888'}}>article Placeholder</Text>
       </View>
 
       <TouchableOpacity 

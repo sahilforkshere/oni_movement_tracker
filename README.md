@@ -17,9 +17,7 @@ these libraries were chosen to ensure the app is maintainable and functional:
 
 * **@react-navigation/native & stack**: used for moving between the home and counter screens.
 * **@react-native-async-storage/async-storage**: used to save and load kick sessions from local storage.
-* **expo**: the core framework used for rapid development and testing.
-data structure for storing records
-each session is saved as a structured object inside an array. the app uses **json.stringify** and **json.parse** for proper serialization.
+
 
 ->> **example object:**
 ```json
