@@ -27,3 +27,7 @@ these libraries were chosen to ensure the app is maintainable and functional:
   "displayDate": "wednesday, 31 dec 2025",
   "duration": 12
 }
+
+--->> **screen recording**
+
+(https://drive.google.com/file/d/1tH-rrL4UPrxo3T9BMNoh6vhJIiR2ZRr3/view?usp=sharing)
