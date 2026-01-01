@@ -18,6 +18,10 @@ these libraries were chosen to ensure the app is maintainable and functional:
 * **@react-navigation/native & stack**: used for moving between the home and counter screens.
 * **@react-native-async-storage/async-storage**: used to save and load kick sessions from local storage.
 
+--->> **screen recording**
+
+https://drive.google.com/file/d/1tH-rrL4UPrxo3T9BMNoh6vhJIiR2ZRr3/view?usp=sharing
+
 
 ->> **example object:**
 ```json
@@ -28,6 +32,3 @@ these libraries were chosen to ensure the app is maintainable and functional:
   "duration": 12
 }
 
---->> **screen recording**
-
-(https://drive.google.com/file/d/1tH-rrL4UPrxo3T9BMNoh6vhJIiR2ZRr3/view?usp=sharing)
